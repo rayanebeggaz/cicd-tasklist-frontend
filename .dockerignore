@@ -1,0 +1,10 @@
+node_modules
+dist
+coverage
+reports
+.git
+.gitignore
+*.log
+Jenkinsfile
+.scannerwork
+README.md

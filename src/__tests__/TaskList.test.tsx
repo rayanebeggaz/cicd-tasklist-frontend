@@ -22,38 +22,48 @@ const mockTasks: Task[] = [
 	},
 ];
 
+const noop = {
+	onToggle: vi.fn(),
+	onDelete: vi.fn(),
+	onEdit: vi.fn(),
+};
+
 describe('TaskList', () => {
 	it('shows loading state', () => {
-		render(
-			<TaskList
-				tasks={[]}
-				loading={true}
-				error={null}
-				onToggle={vi.fn()}
-				onDelete={vi.fn()}
-				onEdit={vi.fn()}
-			/>
-		);
+		render(<TaskList tasks={[]} loading={true} error={null} {...noop} />);
+
 		expect(screen.getByTestId('loading')).toBeInTheDocument();
 		expect(screen.getByText('Chargement des tâches...')).toBeInTheDocument();
 	});
 
-	it('renders list of tasks', () => {
+	it('shows error state', () => {
 		render(
-			<TaskList
-				tasks={mockTasks}
-				loading={false}
-				error={null}
-				onToggle={vi.fn()}
-				onDelete={vi.fn()}
-				onEdit={vi.fn()}
-			/>
+			<TaskList tasks={[]} loading={false} error="Réseau indisponible" {...noop} />
 		);
+
+		expect(screen.getByTestId('error')).toBeInTheDocument();
+		expect(screen.getByText(/Réseau indisponible/)).toBeInTheDocument();
+	});
+
+	it('shows empty state when there are no tasks', () => {
+		render(<TaskList tasks={[]} loading={false} error={null} {...noop} />);
+
+		expect(screen.getByTestId('empty')).toBeInTheDocument();
+		expect(screen.getByText('Aucune tâche')).toBeInTheDocument();
+	});
+
+	it('renders a list of tasks', () => {
+		render(<TaskList tasks={mockTasks} loading={false} error={null} {...noop} />);
+
 		expect(screen.getByTestId('task-list')).toBeInTheDocument();
 		expect(screen.getByText('Première tâche')).toBeInTheDocument();
 		expect(screen.getByText('Deuxième tâche')).toBeInTheDocument();
 		expect(screen.getByText('2 tâches')).toBeInTheDocument();
 	});
 
-	// ... TODO: Add more tests
+	it('shows the completed count', () => {
+		render(<TaskList tasks={mockTasks} loading={false} error={null} {...noop} />);
+
+		expect(screen.getByText('1 terminée')).toBeInTheDocument();
+	});
 });
