@@ -73,7 +73,7 @@ pipeline {
 
         stage('Security - Trivy scan') {
             steps {
-                sh 'trivy image --no-progress --severity HIGH,CRITICAL --exit-code 0 $IMAGE_NAME:$IMAGE_TAG | tee trivy-report.txt'
+                sh 'trivy image --no-progress --timeout 15m --severity HIGH,CRITICAL --exit-code 0 $IMAGE_NAME:$IMAGE_TAG | tee trivy-report.txt'
             }
         }
 
